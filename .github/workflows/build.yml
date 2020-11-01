@@ -1,0 +1,67 @@
+name: build
+
+on:
+  release:
+    types: [edited, published]
+
+jobs:
+  build:
+    name: PyInstaller for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: linux-latest
+            artifact_name: peerfeedback
+            asset_name: linux
+          - os: windows-latest
+            artifact_name: peerfeedback.exe
+            asset_name: windows
+    steps:
+      - name: Checkout peerfeedback
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install PyInstaller
+        run: pip install 'pyinstaller==4.0'
+      - name: Install peerfeedback
+        run: pip install .
+      - name: Build standalone executable
+        run: pyinstaller --onefile --name peerfeedback .github/pyinstaller/run.py
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.asset_name }}
+          path: dist/${{ matrix.artifact_name }}
+
+  zip:
+    name: zip ${{ matrix.asset_name }}
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - os: linux-latest
+            artifact_name: peerfeedback
+            asset_name: linux
+          - os: windows-latest
+            artifact_name: peerfeedback.exe
+            asset_name: windows
+    steps:
+      - name: Download ${{ matrix.asset_name }}
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.asset_name }}
+      - name: Set executable flag
+        run: chmod +x ${{ matrix.artifact_name }}
+      - name: Set zip name
+        run: echo "zip_name=peerfeedback-${GITHUB_REF#refs/tags/}-${{ matrix.asset_name }}.zip" >> $GITHUB_ENV
+      - name: Zip ${{ matrix.artifact_name }} into ${{ env.zip_name }}
+        run: zip ${{ env.zip_name }} ${{ matrix.artifact_name }}
+      - name: Upload ${{ env.zip_name }} to GH Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN}}
+          file: ${{ env.zip_name }}
+          tag: ${{ github.ref }}
