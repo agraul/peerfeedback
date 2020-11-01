@@ -75,7 +75,7 @@ def test_generate_row(test_map):
 @pytest.mark.destructive
 def test_write_to_file(test_map):
     rows = [output.generate_row(stud, test_map) for stud in test_map.mappings.keys()]
-    output.write_to_file(rows, "peerfeedbackmatcher.xlsx")
+    output.write_to_file(rows, "test_output.xlsx")
 
 
 def test_create_output_filename():

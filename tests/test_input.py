@@ -5,7 +5,7 @@ from peerfeedback.interfaces import Candidate
 
 
 def test_read_students_from_file():
-    filename = "peerfeedbackmatcher.xlsx"
+    filename = "tests/data/peerfeedbackmatcher.xlsx"
     expected = [
         Candidate("hans.wurst@stud.leuphana.de"),
         Candidate("darth.vader@stud.leuphana.de"),
