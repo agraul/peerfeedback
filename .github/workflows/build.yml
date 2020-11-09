@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: linux-latest
+          - os: ubuntu-latest
             artifact_name: peerfeedback
             asset_name: linux
           - os: windows-latest
