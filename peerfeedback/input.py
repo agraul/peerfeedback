@@ -23,7 +23,7 @@ def read_candidates_from_file(filename: str) -> typing.List["Candidate"]:
 
 def parse_candidate(string: str) -> typing.Union["Candidate", None]:
     """Parse Candidate from given string."""
-    regex = re.compile(r"^\w+\.\w+@stud\.leuphana\.de$")
+    regex = re.compile(r".+@stud\.leuphana\.de$")
     if regex.match(string.strip()):
         return Candidate(string)
     else:

@@ -20,9 +20,11 @@ def test_read_students_from_file():
 def test_parse_student():
     test_string = "hans.wurst@stud.leuphana.de"
     test_string2 = "hans.wurst2@stud.leuphana.de"
+    test_string3 = "hans@stud.leuphana.de"
 
     assert input.parse_candidate(test_string) == Candidate(test_string)
     assert input.parse_candidate(test_string2) == Candidate(test_string2)
+    assert input.parse_candidate(test_string3) == Candidate(test_string3)
     assert input.parse_candidate("") == None
     assert input.parse_candidate("michal@gmail.com") == None
     assert input.parse_candidate("@stud.leuphana.de") == None
